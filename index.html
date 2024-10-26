@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feistel Cipher Test</title>
+    <script src="./script.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      textarea {
+        width: 100%;
+        height: 100px;
+      }
+      input,
+      button {
+        margin: 10px 0;
+      }
+
+      textarea {
+        font-size: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Feistel Cipher Encryption/Decryption</h1>
+    <form id="cipherForm">
+      <label for="plaintext">Text:</label><br />
+      <textarea id="plaintext" name="plaintext" required></textarea><br />
+      <label for="key">Key (number):</label><br />
+      <input type="number" id="key" name="key" required /><br />
+      <label for="rounds">Rounds:</label><br />
+      <input type="number" id="rounds" name="rounds" required /><br />
+      <button type="button" onclick="encrypt()">Encrypt</button>
+      <button type="button" onclick="decrypt()">Decrypt</button>
+    </form>
+    <h2>Result:</h2>
+    <textarea id="result" readonly></textarea>
+  </body>
+</html>
