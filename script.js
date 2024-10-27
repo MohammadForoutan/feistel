@@ -5,24 +5,39 @@ class FeistelCipher {
   }
 
   roundFunction(input, shift) {
-    return input
-      .split("")
-      .map((char) => {
-        if (char >= "A" && char <= "Z") {
-          return String.fromCharCode(
-            ((char.charCodeAt(0) - 65 + shift) % 26) + 65
-          );
-        } else if (char >= "a" && char <= "z") {
-          return String.fromCharCode(
-            ((char.charCodeAt(0) - 97 + shift) % 26) + 97
-          );
-        } else {
-          return char;
-        }
-      })
-      .join("");
-  }
+    // Ensure the shift is positive
+    const positiveShift = shift < 0 ? -shift : shift; // Convert negative to positive
+    // Normalize the shift value to ensure it is between 0 and 25
+    const normalizedShift = positiveShift % 26;
 
+    return (
+      input
+        .split("") // Split the input string into an array of characters
+        .map((char) => {
+          // Check if the character is an uppercase letter (A-Z)
+          if (char >= "A" && char <= "Z") {
+            return String.fromCharCode(
+              // Normalize the character's ASCII value, apply the shift, and wrap around using modulo
+              ((char.charCodeAt(0) - 65 + normalizedShift) % 26) + 65,
+            );
+          }
+          // Check if the character is a lowercase letter (a-z)
+          else if (char >= "a" && char <= "z") {
+            return String.fromCharCode(
+              // Normalize the character's ASCII value, apply the shift, and wrap around using modulo
+              ((char.charCodeAt(0) - 97 + normalizedShift) % 26) + 97,
+            );
+          }
+          // If the character is neither uppercase nor lowercase
+          else {
+            // Return the character unchanged (e.g., numbers, punctuation, spaces)
+            return char;
+          }
+        })
+        // Join the transformed array of characters back into a single string
+        .join("")
+    );
+  }
   encrypt(plainText) {
     document.getElementById("debug").innerHTML = "";
     console.clear();
@@ -36,7 +51,7 @@ class FeistelCipher {
 
     for (let i = 0; i < this.rounds; i++) {
       console.log("Round", i + 1);
-      const shiftedRight = this.roundFunction(right, this.key + i);
+      const shiftedRight = this.roundFunction(right, this.key + i); // generate sub keys
       const newLeft = right;
       const newRight = this.xorStrings(left, shiftedRight);
       left = newLeft;
@@ -83,7 +98,7 @@ class FeistelCipher {
     let result = "";
     for (let i = 0; i < left.length; i++) {
       result += String.fromCharCode(
-        left.charCodeAt(i) ^ right.charCodeAt(i % right.length)
+        left.charCodeAt(i) ^ right.charCodeAt(i % right.length),
       );
     }
     return result;
@@ -101,6 +116,8 @@ function encrypt() {
 
   document.getElementById("result").value = encrypted;
 
+  console.log("encrypted", encrypted);
+
   delete feistelCipher;
 }
 
@@ -114,6 +131,8 @@ function decrypt() {
   const decrypted = feistelCipher.decrypt(ciphertext);
 
   document.getElementById("result").value = decrypted;
+
+  console.log("decrypted", decrypted);
 
   delete feistelCipher;
 }
