@@ -1,3 +1,27 @@
+function generateDebugTable(debugData) {
+  const debugElement = document.getElementById("debug");
+  debugElement.innerHTML = `
+    <table border="1">
+      <tr>
+        <th>Round</th>
+        <th>Left</th>
+        <th>Right</th>
+      </tr>
+      ${debugData
+        .map(
+          (item) => `
+        <tr>
+          <td>${item.round}</td>
+          <td>${item.left}</td>
+          <td>${item.right}</td>
+        </tr>
+      `
+        )
+        .join("")}
+    </table>
+  `;
+}
+
 class FeistelCipher {
   constructor(rounds, key) {
     this.rounds = rounds;
@@ -18,14 +42,14 @@ class FeistelCipher {
           if (char >= "A" && char <= "Z") {
             return String.fromCharCode(
               // Normalize the character's ASCII value, apply the shift, and wrap around using modulo
-              ((char.charCodeAt(0) - 65 + normalizedShift) % 26) + 65,
+              ((char.charCodeAt(0) - 65 + normalizedShift) % 26) + 65
             );
           }
           // Check if the character is a lowercase letter (a-z)
           else if (char >= "a" && char <= "z") {
             return String.fromCharCode(
               // Normalize the character's ASCII value, apply the shift, and wrap around using modulo
-              ((char.charCodeAt(0) - 97 + normalizedShift) % 26) + 97,
+              ((char.charCodeAt(0) - 97 + normalizedShift) % 26) + 97
             );
           }
           // If the character is neither uppercase nor lowercase
@@ -39,15 +63,14 @@ class FeistelCipher {
     );
   }
   encrypt(plainText) {
-    document.getElementById("debug").innerHTML = "";
     console.clear();
     let left = plainText.slice(0, Math.floor(plainText.length / 2));
     let right = plainText.slice(Math.floor(plainText.length / 2));
     console.log("Initial Left", left);
     console.log("Initial Right", right);
     console.log("--------------------------------");
-    document.getElementById("debug").innerHTML +=
-      "Initial Left: " + left + "<br>Initial Right: " + right + "<br>";
+
+    const debugData = [{ round: "Initial", left, right }];
 
     for (let i = 0; i < this.rounds; i++) {
       console.log("Round", i + 1);
@@ -59,26 +82,27 @@ class FeistelCipher {
       console.log("Left", left);
       console.log("Right", right);
       console.log("--------------------------------");
-      document.getElementById("debug").innerHTML +=
-        "Round " + (i + 1) + ": Left: " + left + " Right: " + right + "<br>";
+
+      debugData.push({ round: i + 1, left, right });
     }
+
+    generateDebugTable(debugData);
 
     return left + right;
   }
 
   decrypt(cipherText) {
-    document.getElementById("debug").innerHTML = "";
     console.clear();
     let left = cipherText.slice(0, Math.floor(cipherText.length / 2));
     let right = cipherText.slice(Math.floor(cipherText.length / 2));
-
     console.log("Initial Left", left);
     console.log("Initial Right", right);
     console.log("--------------------------------");
-    document.getElementById("debug").innerHTML +=
-      "Initial Left: " + left + "<br>Initial Right: " + right + "<br>";
+
+    const debugData = [{ round: "Initial", left, right }];
 
     for (let i = this.rounds - 1; i >= 0; i--) {
+      console.log("Round", this.rounds - i);
       const shiftedRight = this.roundFunction(left, this.key + i);
       const newRight = left;
       const newLeft = this.xorStrings(right, shiftedRight);
@@ -87,9 +111,11 @@ class FeistelCipher {
       console.log("Left", left);
       console.log("Right", right);
       console.log("--------------------------------");
-      document.getElementById("debug").innerHTML +=
-        "Round " + (i + 1) + ": Left: " + left + " Right: " + right + "<br>";
+
+      debugData.push({ round: this.rounds - i, left, right });
     }
+
+    generateDebugTable(debugData);
 
     return left + right;
   }
@@ -98,7 +124,7 @@ class FeistelCipher {
     let result = "";
     for (let i = 0; i < left.length; i++) {
       result += String.fromCharCode(
-        left.charCodeAt(i) ^ right.charCodeAt(i % right.length),
+        left.charCodeAt(i) ^ right.charCodeAt(i % right.length)
       );
     }
     return result;
