@@ -25,6 +25,10 @@
       textarea {
         font-size: 20px;
       }
+
+      #debug {
+        font-family: monospace;
+      }
     </style>
   </head>
   <body>
@@ -43,6 +47,11 @@
     <h2>Result:</h2>
     <textarea id="result" readonly></textarea>
     <button type="button" onclick="copyResult()">Copy Result</button>
+
+    <br />
+    <br />
+    <h2>Debug:</h2>
+    <div id="debug"></div>
     <script>
       function copyResult() {
         const resultTextarea = document.getElementById("result");

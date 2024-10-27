@@ -24,23 +24,44 @@ class FeistelCipher {
   }
 
   encrypt(plainText) {
+    document.getElementById("debug").innerHTML = "";
+    console.clear();
     let left = plainText.slice(0, Math.floor(plainText.length / 2));
     let right = plainText.slice(Math.floor(plainText.length / 2));
+    console.log("Initial Left", left);
+    console.log("Initial Right", right);
+    console.log("--------------------------------");
+    document.getElementById("debug").innerHTML +=
+      "Initial Left: " + left + "<br>Initial Right: " + right + "<br>";
 
     for (let i = 0; i < this.rounds; i++) {
+      console.log("Round", i + 1);
       const shiftedRight = this.roundFunction(right, this.key + i);
       const newLeft = right;
       const newRight = this.xorStrings(left, shiftedRight);
       left = newLeft;
       right = newRight;
+      console.log("Left", left);
+      console.log("Right", right);
+      console.log("--------------------------------");
+      document.getElementById("debug").innerHTML +=
+        "Round " + (i + 1) + ": Left: " + left + " Right: " + right + "<br>";
     }
 
     return left + right;
   }
 
   decrypt(cipherText) {
+    document.getElementById("debug").innerHTML = "";
+    console.clear();
     let left = cipherText.slice(0, Math.floor(cipherText.length / 2));
     let right = cipherText.slice(Math.floor(cipherText.length / 2));
+
+    console.log("Initial Left", left);
+    console.log("Initial Right", right);
+    console.log("--------------------------------");
+    document.getElementById("debug").innerHTML +=
+      "Initial Left: " + left + "<br>Initial Right: " + right + "<br>";
 
     for (let i = this.rounds - 1; i >= 0; i--) {
       const shiftedRight = this.roundFunction(left, this.key + i);
@@ -48,6 +69,11 @@ class FeistelCipher {
       const newLeft = this.xorStrings(right, shiftedRight);
       left = newLeft;
       right = newRight;
+      console.log("Left", left);
+      console.log("Right", right);
+      console.log("--------------------------------");
+      document.getElementById("debug").innerHTML +=
+        "Round " + (i + 1) + ": Left: " + left + " Right: " + right + "<br>";
     }
 
     return left + right;
