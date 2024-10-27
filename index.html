@@ -19,6 +19,7 @@
       input,
       button {
         margin: 10px 0;
+        cursor: pointer;
       }
 
       textarea {
@@ -31,6 +32,7 @@
     <form id="cipherForm">
       <label for="plaintext">Text:</label><br />
       <textarea id="plaintext" name="plaintext" required></textarea><br />
+      <button type="button" onclick="copyPlaintext()">Copy Text</button><br />
       <label for="key">Key (number):</label><br />
       <input type="number" id="key" name="key" required /><br />
       <label for="rounds">Rounds:</label><br />
@@ -40,5 +42,19 @@
     </form>
     <h2>Result:</h2>
     <textarea id="result" readonly></textarea>
+    <button type="button" onclick="copyResult()">Copy Result</button>
+    <script>
+      function copyResult() {
+        const resultTextarea = document.getElementById("result");
+        resultTextarea.select();
+        document.execCommand("copy");
+      }
+
+      function copyPlaintext() {
+        const plaintextTextarea = document.getElementById("plaintext");
+        plaintextTextarea.select();
+        document.execCommand("copy");
+      }
+    </script>
   </body>
 </html>
